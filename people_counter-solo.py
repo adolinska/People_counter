@@ -5,9 +5,9 @@ import cvzone
 import math
 from sort import *
 
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(0) #0 or 1
 
-model = YOLO("yolov8l.pt")
+model = YOLO("yolov8n.pt")
 
 classNames = ["person", "bicycle", "car", "motorbike", "aeroplane", "bus", "train", "truck", "boat",
               "traffic light", "fire hydrant", "stop sign", "parking meter", "bench", "bird", "cat",
@@ -51,7 +51,7 @@ while True:
             cls = int(box.cls[0])
             currentClass = classNames[cls]
 
-            if currentClass == 'bottle' and conf > 0.75:
+            if currentClass == 'person' and conf > 0.75:
                 currentArray = np.array([x1, y1, x2, y2, conf])
                 detections = np.vstack((detections, currentArray))
                 object_count += 1  # Increment the object count
@@ -68,5 +68,7 @@ while True:
 
     cv2.putText(img, str(object_count), (135, 75), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 0), 6)
 
+    img = cv2.resize(img, (1200,800)) #adjust height and weight to your preferences
     cv2.imshow("People counter with Yolov8", img)
-    cv2.waitKey(1)
+    if cv2.waitKey(1) & 0xFF == ord("q"): #press q to quit the program
+            break
